@@ -1,5 +1,7 @@
 # Errorgutan
 
+[![Code Climate](https://codeclimate.com/github/egoholic/errorgutan/badges/gpa.svg)](https://codeclimate.com/github/egoholic/errorgutan)
+
 TODO: Write a gem description
 
 ## Installation
