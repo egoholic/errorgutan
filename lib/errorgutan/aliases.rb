@@ -1,20 +1,24 @@
 module Errorgutan
   class Aliases
+    include Utils
+
     def initialize
       @aliases = {}
     end
 
-    def bind(*exceptions, with:)
-      exceptions.compact!
-      raise ArgumentError if exceptions.empty? || !with.is_a?(Class)
+    def bind(*exception_classes, with:)
+      exception_classes.compact!
 
-      exceptions.each { |e| @aliases[e] = with }
+      raise ArgumentError unless exception_classes?(exception_classes)
+      raise ArgumentError unless exception_class?(with)
+
+      exception_classes.each { |e| @aliases[e] = with }
     end
 
-    def [](exception)
-      raise ArgumentError unless exception.is_a?(Class)
+    def [](exception_class)
+      raise ArgumentError unless exception_class?(exception_class)
 
-      @aliases[exception]
+      @aliases[exception_class]
     end
   end
 end

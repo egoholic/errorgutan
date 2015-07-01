@@ -1,4 +1,5 @@
 module Errorgutan
+  require "errorgutan/utils"
   require "errorgutan/aliases"
   require "errorgutan/exceptions_handlers"
   require "errorgutan/handler"
@@ -6,8 +7,8 @@ module Errorgutan
 
   class Manager
     def initialize(aliases, exceptions_handlers)
-      raise ArgumentError unless aliases.is_a?(Errorgutan::Aliases)
-      raise ArgumentError unless exceptions_handlers.is_a?(Errorgutan::ExceptionsHandlers)
+      raise ArgumentError unless aliases.is_a?(Aliases)
+      raise ArgumentError unless exceptions_handlers.is_a?(ExceptionsHandlers)
 
       @aliases = aliases
       @exceptions_handlers = exceptions_handlers
