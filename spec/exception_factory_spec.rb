@@ -17,24 +17,13 @@ RSpec.describe Errorgutan::ExceptionFactory do
       end
 
       context "when wrong args" do
-        context "when `exception_class` and `original_exception` are `nil` or not provided" do
-          it "raises an exception" do
-            expect { subject.new(nil, nil) }.to raise_error(ArgumentError)
-            expect { subject.new }.to raise_error(ArgumentError)
-          end
-        end
-
-        context "when `exception_class` is `nil`" do
-          it "raises an exception" do
-            expect { subject.new(nil, original_exception) }.to raise_error(ArgumentError)
-          end
-        end
-
-        context "when `original_exception` is `nil` or not provided" do
-          it "raises an exception" do
-            expect { subject.new(exception_class, nil) }.to raise_error(ArgumentError)
-            expect { subject.new(exception_class) }.to raise_error(ArgumentError)
-          end
+        it "raises ArgumentError" do
+          expect { subject.new(nil, nil) }.to raise_error(ArgumentError)
+          expect { subject.new }.to raise_error(ArgumentError)
+          expect { subject.new(exception_class, nil) }.to raise_error(ArgumentError)
+          expect { subject.new(nil, original_exception) }.to raise_error(ArgumentError)
+          expect { subject.new(Class.new, original_exception) }.to raise_error(ArgumentError)
+          expect { subject.new(exception_class, true) }.to raise_error(ArgumentError)
         end
       end
     end
@@ -56,19 +45,11 @@ RSpec.describe Errorgutan::ExceptionFactory do
           it "raises an exception" do
             expect { subject.build(nil, nil) }.to raise_error(ArgumentError)
             expect { subject.build }.to raise_error(ArgumentError)
-          end
-        end
-
-        context "when `exception_class` is `nil`" do
-          it "raises an exception" do
             expect { subject.build(nil, original_exception) }.to raise_error(ArgumentError)
-          end
-        end
-
-        context "when `original_exception` is `nil` or not provided" do
-          it "raises an exception" do
             expect { subject.build(exception_class, nil) }.to raise_error(ArgumentError)
             expect { subject.build(exception_class) }.to raise_error(ArgumentError)
+            expect { subject.build(Class.new, original_exception) }.to raise_error(ArgumentError)
+            expect { subject.build(exception_class, true) }.to raise_error(ArgumentError)
           end
         end
       end
@@ -82,10 +63,12 @@ RSpec.describe Errorgutan::ExceptionFactory do
       it "returns a correct exception" do
         exception = subject.exception
 
-        expect(exception).not_to be original_exception 
-        expect(exception).to be_a exception_class
-        expect(exception.message).to eq message
-        expect(exception.backtrace).to eq backtrace
+        expect(exception).not_to be             original_exception
+        expect(exception).to     be_instance_of exception_class
+
+        expect(exception.message).to   be_a String
+        expect(exception.message).to   eq original_exception.message
+        expect(exception.backtrace).to eq original_exception.backtrace
       end
     end
   end

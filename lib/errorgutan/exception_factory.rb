@@ -13,16 +13,13 @@ module Errorgutan
       raise ArgumentError unless exception?(original_exception)
 
       @exception_class = exception_class
-      @original_class = original_exception.class
-      @original_message = original_exception.message
-      @original_backtrace = original_exception.backtrace
+      @original_exception = original_exception
     end
 
     def exception
-      @exception = @exception_class.new(@original_message)
-      @exception.set_backtrace @original_backtrace
-
-      return @exception
+      @exception_class.new(@original_exception).tap do |e|
+        e.set_backtrace @original_exception.backtrace
+      end
     end
   end
 end
