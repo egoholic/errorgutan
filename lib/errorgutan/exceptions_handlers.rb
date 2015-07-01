@@ -1,22 +1,25 @@
 module Errorgutan
   class ExceptionsHandlers
+    include Utils
+
     def initialize(default:)
-      raise ArgumentError if default.nil?
+      raise ArgumentError unless handler?(default)
 
       @map = {}
       @default = default
     end
 
-    def bind(*exceptions, to:)
-      exceptions.compact!
+    def handle(*exception_classes, with:)
+      raise ArgumentError unless exception_classes?(exception_classes)
+      raise ArgumentError unless handler?(with)
 
-      raise ArgumentError if exceptions.empty? || to.nil?
-
-      exceptions.each { |e| @map[e] = to }
+      exception_classes.each { |e| @map[e] = with }
     end
 
-    def [](exception)
-      @map.fetch(exception, @default)
+    def [](exception_class)
+      raise ArgumentError unless exception_class?(exception_class)
+
+      @map.fetch(exception_class, @default)
     end
   end
 end

@@ -2,6 +2,10 @@ module Errorgutan
   module Utils
     private
 
+    def handler?(obj)
+      obj.instance_of? Handler
+    end
+
     def exception?(obj)
       obj.is_a? Exception
     end

@@ -1,7 +1,7 @@
 RSpec.describe Errorgutan::ExceptionsHandlers do
   let(:exception) { FakeException }
-  let(:handler) { "handler" }
-  let(:default_handler) { "default_handler" }
+  let(:handler) { Errorgutan::Handler.new { |e| "handler" } }
+  let(:default_handler) { Errorgutan::Handler.new { |e| "default_handler" } }
 
   describe "class" do
     subject { described_class }
@@ -27,10 +27,10 @@ RSpec.describe Errorgutan::ExceptionsHandlers do
   describe "instance" do
     subject { described_class.new default: default_handler }
 
-    describe "#bind" do
+    describe "#handle" do
       context "when correct arguments" do
         it "assigns a handler for given exceptions" do
-          expect { subject.bind exception, to: handler }
+          expect { subject.handle exception, with: handler }
             .to change { subject[exception] }
               .from(default_handler)
               .to(handler)
@@ -40,22 +40,22 @@ RSpec.describe Errorgutan::ExceptionsHandlers do
       context "when wrong arguments" do
         context "when `exceptions` and binding `to:` are `nil` or not given" do
           it "raises an exception" do
-            expect { subject.bind(nil, to: nil) }.to raise_error(ArgumentError)
-            expect { subject.bind }.to raise_error(ArgumentError)
+            expect { subject.handle(nil, with: nil) }.to raise_error(ArgumentError)
+            expect { subject.handle}.to raise_error(ArgumentError)
           end
         end
 
         context "when `exceptions` is `nil` or not given" do
           it "raises an exception" do
-            expect { subject.bind(nil, to: handler) }.to raise_error(ArgumentError)
-            expect { subject.bind(to: handler) }.to raise_error(ArgumentError)
+            expect { subject.handle(nil, with: handler) }.to raise_error(ArgumentError)
+            expect { subject.handle(with: handler) }.to raise_error(ArgumentError)
           end
         end
 
         context "when binding `to:` is nil or not given" do
           it "raises an exception" do
-            expect { subject.bind(exception, to: nil) }.to raise_error(ArgumentError)
-            expect { subject.bind(exception) }.to raise_error(ArgumentError)
+            expect { subject.handle(exception, with: nil) }.to raise_error(ArgumentError)
+            expect { subject.handle(exception) }.to raise_error(ArgumentError)
           end
         end
       end
@@ -65,7 +65,7 @@ RSpec.describe Errorgutan::ExceptionsHandlers do
       context "when correct arguments" do
         context "when has defined handler" do
           it "returns handler" do
-            subject.bind(exception, to: handler)
+            subject.handle(exception, with: handler)
 
             expect(subject[exception]).to eq handler
           end
