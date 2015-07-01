@@ -1,7 +1,7 @@
 RSpec.describe Errorgutan::Manager do
   let(:exception) { FakeException.new("fake exception") }
   let(:aliases) { Errorgutan::Aliases.new }
-  let(:default_handler) { Errorgutan::Handler.new { |e| {handled: true} } }
+  let(:default_handler) { Errorgutan::Handler.new { |e| {handled: true, exception_class: e.class} } }
   let(:handler) { Errorgutan::Handler.new { |e| {exception_class: e.class} } }
   let(:exceptions_handlers) { Errorgutan::ExceptionsHandlers.new default: default_handler }
 
@@ -16,24 +16,12 @@ RSpec.describe Errorgutan::Manager do
       end
 
       context "when wrong arguments" do
-        context "when `aliases` and `exceptions_handlers` are nil or not given" do
-          it "raises an exception" do
-            expect { subject.new nil, nil }.to raise_error(ArgumentError)
-            expect { subject.new }.to raise_error(ArgumentError)
-          end
-        end
-
-        context "when `aliases` is not an instance of `Errorgutan::Aliases`" do
-          it "raises an exception" do
-            expect { subject.new true, exceptions_handlers }.to raise_error(ArgumentError)
-          end
-        end
-
-        context "when `exceptions_handlers` is not an instance of `Errorgutan::ExceptionsHandlers` or not given" do
-          it "raises an exception" do
-            expect { subject.new aliases, true }.to raise_error(ArgumentError)
-            expect { subject.new aliases }.to raise_error(ArgumentError)
-          end
+        it "raises ArgumentError" do
+          expect { subject.new nil, nil }.to raise_error(ArgumentError)
+          expect { subject.new }.to raise_error(ArgumentError)
+          expect { subject.new true, exceptions_handlers }.to raise_error(ArgumentError)
+          expect { subject.new aliases, true }.to raise_error(ArgumentError)
+          expect { subject.new aliases }.to raise_error(ArgumentError)
         end
       end
     end
@@ -75,7 +63,7 @@ RSpec.describe Errorgutan::Manager do
 
           context "when exception has no defined handler" do
             it "uses default handler to handle an exception" do
-              expect(subject.manage { raise exception }).to eq({handled: true})
+              expect(subject.manage { raise exception }).to eq({handled: true, exception_class: AliasedException})
             end
           end
         end
@@ -91,7 +79,7 @@ RSpec.describe Errorgutan::Manager do
 
           context "when exception has no defined handler" do
             it "uses default handler to handle an exception" do
-              expect(subject.manage { raise exception }).to eq({handled: true})
+              expect(subject.manage { raise exception }).to eq({handled: true, exception_class: FakeException})
             end
           end
         end

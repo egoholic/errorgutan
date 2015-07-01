@@ -7,19 +7,17 @@ module Errorgutan
 
   class Manager
     def initialize(aliases, exceptions_handlers)
-      raise ArgumentError unless aliases.is_a?(Aliases)
-      raise ArgumentError unless exceptions_handlers.is_a?(ExceptionsHandlers)
+      raise ArgumentError unless aliases.instance_of?(Aliases)
+      raise ArgumentError unless exceptions_handlers.instance_of?(ExceptionsHandlers)
 
       @aliases = aliases
       @exceptions_handlers = exceptions_handlers
     end
 
     def manage
-      yield if block_given?
+      yield
     rescue Exception => exception
-      original_exception_class = exception.class
-      exception_class = alias_for(original_exception_class) || original_exception_class
-      aliased_exception = make_exception(exception_class, exception)
+      aliased_exception = make_new_exception_from(exception)
 
       handle_exception aliased_exception
     end
@@ -30,8 +28,9 @@ module Errorgutan
       @aliases[exception_class] || exception_class
     end
 
-    def make_exception(exception_class, original_exception)
-      ExceptionFactory.build exception_class, original_exception
+    def make_new_exception_from(exception)
+      exception_class = alias_for(exception.class)
+      ExceptionFactory.build exception_class, exception
     end
 
     def handle_exception(exception)

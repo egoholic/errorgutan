@@ -11,10 +11,7 @@ module Errorgutan
     end
 
     def exception_class?(cls)
-      return false if cls.nil?
-      return true if cls.superclass == Exception
-
-      cls.ancestors.include? Exception 
+      cls.instance_of?(Class) && cls.ancestors.include?(Exception)
     end
 
     def exception_classes?(list)
