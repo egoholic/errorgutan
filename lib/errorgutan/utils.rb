@@ -2,6 +2,10 @@ module Errorgutan
   module Utils
     private
 
+    def exception?(obj)
+      obj.is_a? Exception
+    end
+
     def exception_class?(cls)
       return false if cls.nil?
       return true if cls.superclass == Exception

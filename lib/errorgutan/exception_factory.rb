@@ -1,5 +1,7 @@
 module Errorgutan
   class ExceptionFactory
+    include Utils
+
     class << self
       def build(exception_class, original_exception)
         new(exception_class, original_exception).exception
@@ -7,7 +9,8 @@ module Errorgutan
     end
 
     def initialize(exception_class, original_exception)
-      raise ArgumentError if exception_class.nil? || original_exception.nil?
+      raise ArgumentError unless exception_class?(exception_class)
+      raise ArgumentError unless exception?(original_exception)
 
       @exception_class = exception_class
       @original_class = original_exception.class
