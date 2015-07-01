@@ -7,8 +7,6 @@ module Errorgutan
     end
 
     def bind(*exception_classes, with:)
-      exception_classes.compact!
-
       raise ArgumentError unless exception_classes?(exception_classes)
       raise ArgumentError unless exception_class?(with)
 
