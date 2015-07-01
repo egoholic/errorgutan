@@ -1,6 +1,6 @@
 RSpec.describe Errorgutan::Handler do
   let(:exception) { FakeException.new("some exception", [""]) }
-  let(:block) { ->(e) { "Handled!" } }
+  let(:block) { ->(e) { "#{e.class} Handled!" } }
 
   describe "class" do
     subject { described_class }
@@ -13,10 +13,8 @@ RSpec.describe Errorgutan::Handler do
       end
 
       context "when wrong arguments" do
-        context "when `handler` block is not given" do
-          it "raise an exception" do
-            expect { subject.new }.to raise_error(ArgumentError)
-          end
+        it "raise ArgumentError" do
+          expect { subject.new }.to raise_error(ArgumentError)
         end
       end
     end
@@ -28,16 +26,15 @@ RSpec.describe Errorgutan::Handler do
     describe "#handle" do
       context "when correct arguments" do
         it "handles the exception" do
-          expect(subject.handle exception).to eq "Handled!"
+          expect(subject.handle exception).to eq "FakeException Handled!"
         end
       end
 
       context "when wrong arguments" do
-        context "when `exception` is not Exception or not given" do
-          it "raises an exception" do
-            expect { subject.handle nil }.to raise_error(ArgumentError)
-            expect { subject.handle }.to raise_error(ArgumentError)
-          end
+        it "raises ArgumentError" do
+          expect { subject.handle nil }.to raise_error(ArgumentError)
+          expect { subject.handle }.to raise_error(ArgumentError)
+          expect { subject.handle true }.to raise_error(ArgumentError)
         end
       end
     end
