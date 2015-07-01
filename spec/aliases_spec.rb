@@ -14,24 +14,45 @@ RSpec.describe Errorgutan::Aliases do
       end
 
       context "when wrong arguments" do
-        context "when `exception` and alias `with:` are `nil` or not provided" do
-          it "raises an exception" do
+        context "when `exception_classes` and alias `with:` are `nil`, not provided or not exception classes" do
+          it "raises ArgumentError" do
             expect { subject.bind(nil, with: nil) }.to raise_error(ArgumentError)
             expect { subject.bind }.to raise_error(ArgumentError)
+            expect { subject.bind(Class.new, with: Class.new) }.to raise_error(ArgumentError)
           end
         end
 
-        context "when `exception` is `nil` or not provided" do
-          it "raises an exception" do
+        context "when `exception_classes` is `nil`, not provided or not exception class" do
+          it "raises ArgumentError" do
             expect { subject.bind(nil, with: aliased_exception_class) }.to raise_error(ArgumentError)
             expect { subject.bind(with: aliased_exception_class) }.to raise_error(ArgumentError)
+            expect { subject.bind(Class.new, with: aliased_exception_class) }.to raise_error(ArgumentError)
           end
         end
 
-        context "when alias `with:` is `nil` or not provided" do
+        context "when alias `with:` is `nil`, not provided or not exception class" do
           it "raises an exception" do
             expect { subject.bind(exception_class, with: nil) }.to raise_error(ArgumentError)
             expect { subject.bind(exception_class) }.to raise_error(ArgumentError)
+            expect { subject.bind(exception_class, with: Class.new) }.to raise_error(ArgumentError)
+          end
+        end
+
+        context "when `exception_classes` contains `nil`s" do
+          it "raises ArgumentError" do
+            expect { subject.bind nil, exception_class, with: aliased_exception_class }.to raise_error(ArgumentError)
+          end
+        end
+
+        context "when `exception_classes` contains objects which aren't Exceptions" do
+          it "raises ArgumentError" do
+            expect { subject.bind Class.new, exception_class, with: aliased_exception_class }.to raise_error(ArgumentError)
+          end
+        end
+
+        context "when `exception_classes` is empty" do
+          it "raises ArgumentError" do
+            expect { subject.bind *[], with: aliased_exception_class }.to raise_error(ArgumentError)
           end
         end
       end
@@ -55,10 +76,11 @@ RSpec.describe Errorgutan::Aliases do
       end
 
       context "when wrong arguments" do
-        context "when `exception` is `nil` or not provided" do
-          it "raises an exception" do
+        context "when `exception` is `nil`, not provided or not an exception class" do
+          it "raises ArgumentError" do
             expect { subject[nil] }.to raise_error(ArgumentError)
             expect { subject[] }.to raise_error(ArgumentError)
+            expect { subject[Class.new] }.to raise_error(ArgumentError)
           end
         end
       end
