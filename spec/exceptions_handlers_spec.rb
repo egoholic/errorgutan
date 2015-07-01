@@ -71,7 +71,7 @@ RSpec.describe Errorgutan::ExceptionsHandlers do
       end
 
       context "when wrong arguments" do
-        it "raises an exception" do
+        it "raises ArgumentError" do
           expect { subject[] }.to raise_error(ArgumentError)
           expect { subject[nil] }.to raise_error(ArgumentError)
           expect { subject[Class.new] }.to raise_error(ArgumentError)

@@ -42,7 +42,7 @@ RSpec.describe Errorgutan::ExceptionFactory do
 
       context "when wrong args" do
         context "when `exception_class` and `original_exception` are `nil` or not provided" do
-          it "raises an exception" do
+          it "raises ArgumentError" do
             expect { subject.build(nil, nil) }.to raise_error(ArgumentError)
             expect { subject.build }.to raise_error(ArgumentError)
             expect { subject.build(nil, original_exception) }.to raise_error(ArgumentError)
