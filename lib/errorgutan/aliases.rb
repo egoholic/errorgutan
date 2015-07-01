@@ -6,7 +6,7 @@ module Errorgutan
       @aliases = {}
     end
 
-    def bind(*exception_classes, with:)
+    def bind(exception_classes, with:)
       raise ArgumentError unless exception_classes?(exception_classes)
       raise ArgumentError unless exception_class?(with)
 

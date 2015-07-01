@@ -34,7 +34,7 @@ RSpec.describe Errorgutan::Manager do
       shared_examples "a correct exception manager" do
         context "when exception has defined handler" do
           it "uses handler to handle an exception" do
-            exceptions_handlers.bind FakeException, to: handler
+            exceptions_handlers.hanlde [FakeException], with: handler
 
             expect(subject.manage { raise exception }).to eq({exception_class: exception_class})
           end
@@ -51,11 +51,11 @@ RSpec.describe Errorgutan::Manager do
 
       context "when exception raised" do
         context "when exception has alias" do
-          before { aliases.bind FakeException, with: AliasedException }
+          before { aliases.bind [FakeException], with: AliasedException }
 
           context "when exception has defined handler" do
             it "uses handler to handle an exception" do
-              exceptions_handlers.handle AliasedException, with: handler
+              exceptions_handlers.handle [AliasedException], with: handler
 
               expect(subject.manage { raise exception }).to eq({exception_class: AliasedException})
             end
@@ -71,7 +71,7 @@ RSpec.describe Errorgutan::Manager do
         context "when exception has no alias" do
           context "when exception has defined handler" do
             it "uses handler to handle an exception" do
-              exceptions_handlers.handle FakeException, with: handler
+              exceptions_handlers.handle [FakeException], with: handler
 
               expect(subject.manage { raise exception }).to eq({exception_class: FakeException})
             end

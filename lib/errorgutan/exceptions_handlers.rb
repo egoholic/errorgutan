@@ -9,7 +9,7 @@ module Errorgutan
       @default = default
     end
 
-    def handle(*exception_classes, with:)
+    def handle(exception_classes, with:)
       raise ArgumentError unless exception_classes?(exception_classes)
       raise ArgumentError unless handler?(with)
 

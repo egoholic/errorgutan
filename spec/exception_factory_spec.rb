@@ -18,12 +18,13 @@ RSpec.describe Errorgutan::ExceptionFactory do
 
       context "when wrong args" do
         it "raises ArgumentError" do
-          expect { subject.new(nil, nil) }.to raise_error(ArgumentError)
+          expect { subject.new nil, nil }.to raise_error(ArgumentError)
           expect { subject.new }.to raise_error(ArgumentError)
-          expect { subject.new(exception_class, nil) }.to raise_error(ArgumentError)
-          expect { subject.new(nil, original_exception) }.to raise_error(ArgumentError)
-          expect { subject.new(Class.new, original_exception) }.to raise_error(ArgumentError)
-          expect { subject.new(exception_class, true) }.to raise_error(ArgumentError)
+          expect { subject.new exception_class, nil }.to raise_error(ArgumentError)
+          expect { subject.new nil, original_exception }.to raise_error(ArgumentError)
+          expect { subject.new Class.new, original_exception }.to raise_error(ArgumentError)
+          expect { subject.new exception_class, true }.to raise_error(ArgumentError)
+          expect { subject.new true, true }.to raise_error(ArgumentError)
         end
       end
     end
@@ -43,13 +44,13 @@ RSpec.describe Errorgutan::ExceptionFactory do
       context "when wrong args" do
         context "when `exception_class` and `original_exception` are `nil` or not provided" do
           it "raises ArgumentError" do
-            expect { subject.build(nil, nil) }.to raise_error(ArgumentError)
+            expect { subject.build nil, nil }.to raise_error(ArgumentError)
             expect { subject.build }.to raise_error(ArgumentError)
-            expect { subject.build(nil, original_exception) }.to raise_error(ArgumentError)
-            expect { subject.build(exception_class, nil) }.to raise_error(ArgumentError)
-            expect { subject.build(exception_class) }.to raise_error(ArgumentError)
-            expect { subject.build(Class.new, original_exception) }.to raise_error(ArgumentError)
-            expect { subject.build(exception_class, true) }.to raise_error(ArgumentError)
+            expect { subject.build nil, original_exception }.to raise_error(ArgumentError)
+            expect { subject.build exception_class, nil }.to raise_error(ArgumentError)
+            expect { subject.build exception_class }.to raise_error(ArgumentError)
+            expect { subject.build Class.new, original_exception }.to raise_error(ArgumentError)
+            expect { subject.build exception_class, true }.to raise_error(ArgumentError)
           end
         end
       end
